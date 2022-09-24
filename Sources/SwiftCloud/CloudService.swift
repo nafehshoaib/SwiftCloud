@@ -44,10 +44,30 @@ open class CloudService<CloudURLKey, PathKey>: NSObject where CloudURLKey: Cloud
     }
     
     open func request(at path: PathKey,
+                      using method: URLRequest.HTTPMethod,
+                      body: Data? = nil,
+                      authorize: Bool = false) throws -> URLRequest {
+        return try request(at: path,
+                           using: method,
+                           body: body,
+                           authorize: authorize)
+    }
+    
+    open func request<P>(at path: P,
+                         using method: URLRequest.HTTPMethod,
+                         body: Data? = nil,
+                         authorize: Bool = false) throws -> URLRequest where P: CloudServicePath {
+        return try request(at: path.pathString,
+                           using: method,
+                           body: body,
+                           authorize: authorize)
+    }
+    
+    open func request(at pathString: String,
                  using method: URLRequest.HTTPMethod,
                  body: Data? = nil,
                  authorize: Bool = false) throws -> URLRequest {
-        let urlString = serverURL.url.absoluteString + path.pathString
+        let urlString = serverURL.url.absoluteString + pathString
         
         var request = URLRequest(url: URL(string: urlString)!)
         request.httpMethod = method.rawValue
@@ -69,10 +89,30 @@ open class CloudService<CloudURLKey, PathKey>: NSObject where CloudURLKey: Cloud
     }
     
     open func sendRequest(at path: PathKey,
+                          using method: URLRequest.HTTPMethod,
+                          body: Data? = nil,
+                          authorize: Bool = false) async throws -> (Data, HTTPURLResponse) {
+        return try await sendRequest(at: path,
+                                     using: method,
+                                     body: body,
+                                     authorize: authorize)
+    }
+    
+    open func sendRequest<P>(at path: P,
+                             using method: URLRequest.HTTPMethod,
+                             body: Data? = nil,
+                             authorize: Bool = false) async throws -> (Data, HTTPURLResponse) where P: CloudServicePath {
+        return try await sendRequest(at: path.pathString,
+                                     using: method,
+                                     body: body,
+                                     authorize: authorize)
+    }
+    
+    open func sendRequest(at pathString: String,
                      using method: URLRequest.HTTPMethod,
                      body: Data? = nil,
                      authorize: Bool = false) async throws -> (Data, HTTPURLResponse) {
-        let request = try request(at: path, using: method, body: body, authorize: authorize)
+        let request = try request(at: pathString, using: method, body: body, authorize: authorize)
         
         let (data, response) = try await URLSession.shared.data(for: request)
         
