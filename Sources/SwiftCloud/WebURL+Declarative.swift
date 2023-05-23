@@ -84,6 +84,10 @@ extension WebURL {
         return transform(self)
     }
     
+    public var string: String {
+        return String(self.serialized())
+    }
+    
     public func set(path: some CloudServicePath) -> Self {
         return set(path: path.pathString)
     }
