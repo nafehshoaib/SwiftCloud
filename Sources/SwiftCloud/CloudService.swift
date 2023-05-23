@@ -15,7 +15,7 @@ import WebURLFoundationExtras
 
 open class CloudService<CloudURLKey, PathKey>: NSObject where CloudURLKey: CloudServerURL, PathKey: CloudServicePath {
     private enum KeychainKeys: String {
-        case accessToken
+        case accessToken, refreshToken
     }
     
     private lazy var keychain: Keychain = {
@@ -38,6 +38,15 @@ open class CloudService<CloudURLKey, PathKey>: NSObject where CloudURLKey: Cloud
         }
         set {
             keychain[KeychainKeys.accessToken] = newValue
+        }
+    }
+    
+    public var refreshToken: String? {
+        get {
+            return keychain[KeychainKeys.refreshToken]
+        }
+        set {
+            keychain[KeychainKeys.refreshToken] = newValue
         }
     }
     

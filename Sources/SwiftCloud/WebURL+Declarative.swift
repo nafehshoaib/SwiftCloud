@@ -80,6 +80,10 @@ extension WebURL {
         return add(formParams: formParams())
     }
     
+    public func add(formParams: [String: String]) -> Self {
+        return add(formParams: formParams.map { ($0, $1) })
+    }
+    
     public func transform(_ transform: (Self) -> WebURL) -> WebURL {
         return transform(self)
     }
