@@ -7,10 +7,13 @@
 
 import Foundation
 
+import WebURL
+
 public protocol CloudServerURL {
     var urlString: String { get }
     var url: URL { get }
     var safeString: String { get }
+    var webURL: WebURL? { get }
 }
 
 public protocol CloudServerURLRepresentable: CloudServerURL, RawRepresentable { }
@@ -22,6 +25,10 @@ extension CloudServerURL {
     
     public var safeString: String {
         return urlString.last == "/" ? urlString : urlString + "/"
+    }
+    
+    public var webURL: WebURL? {
+        return WebURL(safeString)
     }
 }
 

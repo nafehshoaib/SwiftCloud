@@ -10,6 +10,8 @@ import os
 
 import KeychainAccess
 import SwiftDate
+import WebURL
+import WebURLFoundationExtras
 
 open class CloudService<CloudURLKey, PathKey>: NSObject where CloudURLKey: CloudServerURL, PathKey: CloudServicePath {
     private enum KeychainKeys: String {
@@ -53,13 +55,11 @@ open class CloudService<CloudURLKey, PathKey>: NSObject where CloudURLKey: Cloud
                            authorize: authorize)
     }
     
-    open func request(at pathString: String,
-                 using method: URLRequest.HTTPMethod,
-                 body: Data? = nil,
-                 authorize: Bool = false) throws -> URLRequest {
-        let urlString = serverURL.url.absoluteString + pathString
-        
-        var request = URLRequest(url: URL(string: urlString)!)
+    open func request(webURL: WebURL,
+                      using method: URLRequest.HTTPMethod,
+                      body: Data? = nil,
+                      authorize: Bool = false) throws -> URLRequest {
+        var request = URLRequest(url: webURL)
         request.httpMethod = method.rawValue
         
         if authorize {
@@ -76,6 +76,17 @@ open class CloudService<CloudURLKey, PathKey>: NSObject where CloudURLKey: Cloud
         }
         
         return request
+    }
+    
+    open func request(at pathString: String,
+                 using method: URLRequest.HTTPMethod,
+                 body: Data? = nil,
+                 authorize: Bool = false) throws -> URLRequest {
+        guard let webURL = serverURL.webURL?.set(path: pathString) else {
+            throw CloudError.invalidURL(serverURL.urlString, pathString)
+        }
+        
+        return try request(webURL: webURL, using: method, body: body, authorize: authorize)
     }
     
     open func sendRequest(at path: PathKey,
