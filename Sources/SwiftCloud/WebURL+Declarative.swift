@@ -83,4 +83,8 @@ extension WebURL {
     public func transform(_ transform: (Self) -> WebURL) -> WebURL {
         return transform(self)
     }
+    
+    public func set(path: some CloudServicePath) -> Self {
+        return set(path: path.pathString)
+    }
 }
