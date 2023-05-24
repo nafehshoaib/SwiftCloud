@@ -57,16 +57,19 @@ open class CloudService<CloudURLKey, PathKey>: NSObject where CloudURLKey: Cloud
     open func request(at path: PathKey,
                       using method: URLRequest.HTTPMethod,
                       body: Data? = nil,
+                      contentType: CloudContentType = .json,
                       authorize: Bool = false) throws -> URLRequest {
         return try request(at: path.pathString,
                            using: method,
                            body: body,
+                           contentType: contentType,
                            authorize: authorize)
     }
     
     open func request(webURL: WebURL,
                       using method: URLRequest.HTTPMethod,
                       body: Data? = nil,
+                      contentType: CloudContentType = .json,
                       authorize: Bool = false) throws -> URLRequest {
         var request = URLRequest(url: webURL)
         request.httpMethod = method.rawValue
@@ -81,38 +84,42 @@ open class CloudService<CloudURLKey, PathKey>: NSObject where CloudURLKey: Cloud
         
         if let body = body {
             request.httpBody = body
-            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.addValue(contentType.rawValue, forHTTPHeaderField: "Content-Type")
         }
         
         return request
     }
     
     open func request(at pathString: String,
-                 using method: URLRequest.HTTPMethod,
-                 body: Data? = nil,
-                 authorize: Bool = false) throws -> URLRequest {
+                      using method: URLRequest.HTTPMethod,
+                      body: Data? = nil,
+                      contentType: CloudContentType = .json,
+                      authorize: Bool = false) throws -> URLRequest {
         guard let webURL = serverURL.webURL?.set(path: pathString) else {
             throw CloudError.invalidURL(serverURL.urlString, pathString)
         }
         
-        return try request(webURL: webURL, using: method, body: body, authorize: authorize)
+        return try request(webURL: webURL, using: method, body: body, contentType: contentType, authorize: authorize)
     }
     
     open func sendRequest(at path: PathKey,
                           using method: URLRequest.HTTPMethod,
                           body: Data? = nil,
+                          contentType: CloudContentType = .json,
                           authorize: Bool = false) async throws -> (Data, HTTPURLResponse) {
         return try await sendRequest(at: path.pathString,
                                      using: method,
                                      body: body,
+                                     contentType: contentType,
                                      authorize: authorize)
     }
     
     open func sendRequest(at pathString: String,
-                     using method: URLRequest.HTTPMethod,
-                     body: Data? = nil,
-                     authorize: Bool = false) async throws -> (Data, HTTPURLResponse) {
-        let request = try request(at: pathString, using: method, body: body, authorize: authorize)
+                          using method: URLRequest.HTTPMethod,
+                          body: Data? = nil,
+                          contentType: CloudContentType = .json,
+                          authorize: Bool = false) async throws -> (Data, HTTPURLResponse) {
+        let request = try request(at: pathString, using: method, body: body, contentType: contentType, authorize: authorize)
         
         let (data, response) = try await URLSession.shared.data(for: request)
         
