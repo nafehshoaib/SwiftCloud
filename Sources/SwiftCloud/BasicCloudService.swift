@@ -49,9 +49,11 @@ open class BasicCloudService<CloudURLKey, PathKey>: NSObject where CloudURLKey: 
                       using method: URLRequest.HTTPMethod,
                       body: Data? = nil,
                       contentType: CloudContentType = .json) throws -> URLRequest {
-        guard let webURL = serverURL.webURL?.add(pathComponents: [pathString]) else {
+        guard var webURL = serverURL.webURL else {
             throw CloudError.invalidURL(serverURL.urlString, pathString)
         }
+        
+        webURL.pathComponents.append(pathString)
         
         return try request(webURL: webURL, using: method, body: body, contentType: contentType)
     }
