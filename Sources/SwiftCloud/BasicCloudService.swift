@@ -53,7 +53,7 @@ open class BasicCloudService<CloudURLKey, PathKey>: NSObject where CloudURLKey: 
             throw CloudError.invalidURL(serverURL.urlString, pathString)
         }
         
-        webURL.pathComponents.append(pathString)
+        webURL.pathComponents.append(contentsOf: pathString.split(separator: "/"))
         
         return try request(webURL: webURL, using: method, body: body, contentType: contentType)
     }
