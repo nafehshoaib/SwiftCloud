@@ -23,21 +23,26 @@ open class BasicCloudService<CloudURLKey, PathKey>: NSObject where CloudURLKey: 
     open func request(at path: PathKey,
                       using method: URLRequest.HTTPMethod,
                       body: Data? = nil,
+                      queryParams: [String: String]? = nil,
                       contentType: CloudContentType = .json) throws -> URLRequest {
         return try request(at: path.pathString,
                            using: method,
                            body: body,
+                           queryParams: queryParams,
                            contentType: contentType)
     }
     
     open func request(webURL: WebURL,
                       using method: URLRequest.HTTPMethod,
                       body: Data? = nil,
+                      queryParams: [String: String]? = nil,
                       contentType: CloudContentType = .json) throws -> URLRequest {
         var request = URLRequest(url: webURL)
         request.httpMethod = method.rawValue
         
-        if let body = body {
+        if let params = queryParams {
+            request.webURL?.formParams.append(contentsOf: params.map { ($0, $1) })
+        } else if let body = body {
             request.httpBody = body
             request.addValue(contentType.rawValue, forHTTPHeaderField: "Content-Type")
         }
@@ -48,6 +53,7 @@ open class BasicCloudService<CloudURLKey, PathKey>: NSObject where CloudURLKey: 
     open func request(at pathString: String,
                       using method: URLRequest.HTTPMethod,
                       body: Data? = nil,
+                      queryParams: [String: String]? = nil,
                       contentType: CloudContentType = .json) throws -> URLRequest {
         guard var webURL = serverURL.webURL else {
             throw CloudError.invalidURL(serverURL.urlString, pathString)
@@ -55,24 +61,27 @@ open class BasicCloudService<CloudURLKey, PathKey>: NSObject where CloudURLKey: 
         
         webURL.pathComponents.append(contentsOf: pathString.split(separator: "/"))
         
-        return try request(webURL: webURL, using: method, body: body, contentType: contentType)
+        return try request(webURL: webURL, using: method, body: body, queryParams: queryParams, contentType: contentType)
     }
     
     open func sendRequest(at path: PathKey,
                           using method: URLRequest.HTTPMethod,
                           body: Data? = nil,
+                          queryParams: [String: String]? = nil,
                           contentType: CloudContentType = .json) async throws -> (Data, HTTPURLResponse) {
         return try await sendRequest(at: path.pathString,
                                      using: method,
                                      body: body,
+                                     queryParams: queryParams,
                                      contentType: contentType)
     }
     
     open func sendRequest(at pathString: String,
                           using method: URLRequest.HTTPMethod,
                           body: Data? = nil,
+                          queryParams: [String: String]? = nil,
                           contentType: CloudContentType = .json) async throws -> (Data, HTTPURLResponse) {
-        let request = try request(at: pathString, using: method, body: body, contentType: contentType)
+        let request = try request(at: pathString, using: method, body: body, queryParams: queryParams, contentType: contentType)
         
         let (data, response) = try await URLSession.shared.data(for: request)
         
