@@ -95,7 +95,7 @@ open class CloudService<CloudURLKey, PathKey>: NSObject where CloudURLKey: Cloud
                       body: Data? = nil,
                       contentType: CloudContentType = .json,
                       authorize: Bool = false) throws -> URLRequest {
-        guard let webURL = serverURL.webURL?.set(path: pathString) else {
+        guard let webURL = serverURL.webURL?.add(pathComponents: [pathString]) else {
             throw CloudError.invalidURL(serverURL.urlString, pathString)
         }
         
