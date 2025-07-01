@@ -1,4 +1,4 @@
-// swift-tools-version: 5.9
+// swift-tools-version: 6.0
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -22,7 +22,7 @@ let package = Package(
         .package(url: "https://github.com/malcommac/SwiftDate.git", from: "7.0.0"),
         .package(url: "https://github.com/kishikawakatsumi/KeychainAccess.git", branch: "master"),
         .package(url: "https://github.com/SwiftyJSON/SwiftyJSON.git", from: "5.0.0"),
-        .package(url: "https://github.com/karwa/swift-url.git", from: "0.4.1"),
+        .package(url: "https://github.com/karwa/swift-url.git", from: "0.4.2"),
         .package(url: "https://github.com/nafehshoaib/UsefulSwift.git", branch: "main")
     ],
     targets: [

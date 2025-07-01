@@ -1,4 +1,5 @@
 {
+  "originHash" : "54247995d9fc77c6cae8ea53443a7746b18d67be800f35ef017f24738c40c360",
   "pins" : [
     {
       "identity" : "keychainaccess",
@@ -23,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/karwa/swift-url.git",
       "state" : {
-        "revision" : "a04b0e57f148698d091c90392901ce92fd0c5623",
-        "version" : "0.4.1"
+        "revision" : "9306a962396a50d7d88e924afcd7ec67226763db",
+        "version" : "0.4.2"
       }
     },
     {
@@ -55,5 +56,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

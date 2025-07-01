@@ -123,6 +123,10 @@ open class CloudService<CloudURLKey, PathKey>: NSObject where CloudURLKey: Cloud
                           authorize: Bool = false) async throws -> (Data, HTTPURLResponse) {
         let request = try request(at: pathString, using: method, body: body, contentType: contentType, authorize: authorize)
         
+        return try await sendRequest(request)
+    }
+    
+    open func sendRequest(_ request: URLRequest) async throws -> (Data, HTTPURLResponse) {
         let (data, response) = try await URLSession.shared.data(for: request)
         
         if let httpResponse = response as? HTTPURLResponse {
