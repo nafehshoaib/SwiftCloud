@@ -16,7 +16,7 @@ extension URLRequest {
         case head = "HEAD"
     }
     
-    func cURL() -> String {
+    public func cURL() -> String {
         let cURL = "curl -f"
         let method = "-X \(self.httpMethod ?? "GET")"
         let url = url.flatMap { "--url '\($0.absoluteString)'" }
